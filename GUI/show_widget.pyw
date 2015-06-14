@@ -24,6 +24,9 @@ from Vector_Velocities_with_Sunpy import *
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 
+__authors__ = ["Jose Ivan Campos Rozo", Santiago Vargas Dominguez]
+__email__ = "jicamposr@unal.edu.co"
+
 # Matplotlib Figure object 1
 from matplotlib.figure import Figure
 class ImageCanvas1(FigureCanvas):
