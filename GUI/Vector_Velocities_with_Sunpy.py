@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Vector_Velocities_with_Sunpy.ui'
 #
-# Created: Sun May 24 12:46:24 2015
+# Created: Wed Sep 16 13:57:34 2015
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -1111,9 +1111,26 @@ class Ui_FlowsMainWindow(object):
         self.RestorepushButton_2 = QtGui.QPushButton(self.centralwidget)
         self.RestorepushButton_2.setGeometry(QtCore.QRect(700, 530, 85, 26))
         self.RestorepushButton_2.setObjectName(_fromUtf8("RestorepushButton_2"))
+        self.AnalysisgroupBox = QtGui.QGroupBox(self.centralwidget)
+        self.AnalysisgroupBox.setGeometry(QtCore.QRect(280, 540, 271, 51))
+        self.AnalysisgroupBox.setObjectName(_fromUtf8("AnalysisgroupBox"))
+        self.InitspinBox = QtGui.QSpinBox(self.AnalysisgroupBox)
+        self.InitspinBox.setGeometry(QtCore.QRect(70, 20, 42, 23))
+        self.InitspinBox.setMaximum(10000)
+        self.InitspinBox.setObjectName(_fromUtf8("InitspinBox"))
+        self.FinalspinBox = QtGui.QSpinBox(self.AnalysisgroupBox)
+        self.FinalspinBox.setGeometry(QtCore.QRect(200, 20, 42, 23))
+        self.FinalspinBox.setMaximum(10000)
+        self.FinalspinBox.setObjectName(_fromUtf8("FinalspinBox"))
+        self.Initlabel = QtGui.QLabel(self.AnalysisgroupBox)
+        self.Initlabel.setGeometry(QtCore.QRect(10, 20, 51, 16))
+        self.Initlabel.setObjectName(_fromUtf8("Initlabel"))
+        self.Finallabel = QtGui.QLabel(self.AnalysisgroupBox)
+        self.Finallabel.setGeometry(QtCore.QRect(140, 20, 51, 16))
+        self.Finallabel.setObjectName(_fromUtf8("Finallabel"))
         FlowsMainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(FlowsMainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1112, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1112, 19))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         self.menuFile = QtGui.QMenu(self.menubar)
         self.menuFile.setObjectName(_fromUtf8("menuFile"))
@@ -1312,6 +1329,9 @@ class Ui_FlowsMainWindow(object):
         self.arcradioButton.setText(_translate("FlowsMainWindow", "Arcseconds", None))
         self.meter_radioButton_2.setText(_translate("FlowsMainWindow", "Mm", None))
         self.RestorepushButton_2.setText(_translate("FlowsMainWindow", "Redraw", None))
+        self.AnalysisgroupBox.setTitle(_translate("FlowsMainWindow", "Range of Analysis", None))
+        self.Initlabel.setText(_translate("FlowsMainWindow", "Initial Frame", None))
+        self.Finallabel.setText(_translate("FlowsMainWindow", "Final frame", None))
         self.menuFile.setTitle(_translate("FlowsMainWindow", "File", None))
         self.menuOpen.setTitle(_translate("FlowsMainWindow", "Open", None))
         self.menuOperation.setTitle(_translate("FlowsMainWindow", "Operation", None))
@@ -1330,4 +1350,3 @@ class Ui_FlowsMainWindow(object):
         self.actionOpen_Cube.setText(_translate("FlowsMainWindow", "Open Cube", None))
         self.actionOpen_Context_Image.setText(_translate("FlowsMainWindow", "Open Context Image", None))
 
-#import logo_rc
