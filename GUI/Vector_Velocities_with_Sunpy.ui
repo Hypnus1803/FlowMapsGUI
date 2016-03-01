@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1112</width>
-    <height>646</height>
+    <width>1194</width>
+    <height>785</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -31,23 +31,23 @@
   <widget class="QWidget" name="centralwidget">
    <property name="minimumSize">
     <size>
-     <width>1112</width>
-     <height>608</height>
+     <width>1140</width>
+     <height>750</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
-     <width>1112</width>
-     <height>608</height>
+     <width>1200</width>
+     <height>750</height>
     </size>
    </property>
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>10</y>
-      <width>251</width>
-      <height>591</height>
+      <width>302</width>
+      <height>621</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -60,10 +60,10 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>0</x>
         <y>30</y>
-        <width>231</width>
-        <height>521</height>
+        <width>281</width>
+        <height>531</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -147,51 +147,25 @@ Temporal cadence :
      <attribute name="title">
       <string>Header</string>
      </attribute>
-     <widget class="QScrollArea" name="HeaderscrollArea_2">
+     <widget class="QTableWidget" name="HeadertableWidget">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>211</width>
-        <height>541</height>
+        <width>291</width>
+        <height>591</height>
        </rect>
       </property>
-      <property name="widgetResizable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents_2">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>209</width>
-         <height>539</height>
-        </rect>
-       </property>
-       <widget class="QTableView" name="headertableView">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>256</width>
-          <height>541</height>
-         </rect>
-        </property>
-        <property name="sortingEnabled">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </widget>
      </widget>
     </widget>
    </widget>
    <widget class="QTabWidget" name="ImagetabWidget_2">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>310</x>
       <y>10</y>
-      <width>551</width>
-      <height>481</height>
+      <width>531</width>
+      <height>501</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -204,25 +178,32 @@ Temporal cadence :
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>0</x>
         <y>20</y>
         <width>521</width>
-        <height>411</height>
+        <height>441</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
-        <widget class="QWidget" name="MeanImage_widget_3" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
+        <widget class="QWidget" name="ToolBar_widget_3" native="true">
+         <widget class="QWidget" name="MeanImage_widget_3" native="true">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>519</width>
+            <height>419</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="ToolBar_widget_3" native="true"/>
        </item>
       </layout>
      </widget>
@@ -231,14 +212,14 @@ Temporal cadence :
    <widget class="QTabWidget" name="MDToolstabWidget_2">
     <property name="geometry">
      <rect>
-      <x>800</x>
+      <x>860</x>
       <y>10</y>
-      <width>311</width>
-      <height>591</height>
+      <width>321</width>
+      <height>701</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="tabsClosable">
      <bool>false</bool>
@@ -297,10 +278,10 @@ Temporal cadence :
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>30</x>
+         <x>10</x>
          <y>22</y>
-         <width>221</width>
-         <height>92</height>
+         <width>234</width>
+         <height>100</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -389,9 +370,9 @@ Temporal cadence :
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>210</y>
+        <y>220</y>
         <width>261</width>
-        <height>191</height>
+        <height>241</height>
        </rect>
       </property>
       <property name="font">
@@ -409,10 +390,10 @@ Temporal cadence :
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>30</x>
+         <x>10</x>
          <y>20</y>
-         <width>221</width>
-         <height>202</height>
+         <width>241</width>
+         <height>214</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -634,9 +615,9 @@ Temporal cadence :
       <property name="geometry">
        <rect>
         <x>40</x>
-        <y>517</y>
+        <y>550</y>
         <width>221</width>
-        <height>31</height>
+        <height>32</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="PlotClear">
@@ -672,7 +653,7 @@ Temporal cadence :
       <property name="geometry">
        <rect>
         <x>160</x>
-        <y>200</y>
+        <y>210</y>
         <width>81</width>
         <height>21</height>
        </rect>
@@ -690,8 +671,8 @@ Temporal cadence :
       <property name="geometry">
        <rect>
         <x>30</x>
-        <y>430</y>
-        <width>81</width>
+        <y>463</y>
+        <width>91</width>
         <height>16</height>
        </rect>
       </property>
@@ -708,8 +689,8 @@ Temporal cadence :
       <property name="geometry">
        <rect>
         <x>180</x>
-        <y>430</y>
-        <width>81</width>
+        <y>463</y>
+        <width>91</width>
         <height>16</height>
        </rect>
       </property>
@@ -726,7 +707,7 @@ Temporal cadence :
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>450</y>
+        <y>483</y>
         <width>111</width>
         <height>62</height>
        </rect>
@@ -778,7 +759,7 @@ Temporal cadence :
       <property name="geometry">
        <rect>
         <x>170</x>
-        <y>450</y>
+        <y>483</y>
         <width>101</width>
         <height>62</height>
        </rect>
@@ -834,15 +815,15 @@ Temporal cadence :
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>281</width>
-        <height>541</height>
+        <x>0</x>
+        <y>0</y>
+        <width>311</width>
+        <height>621</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="histoverticalLayout_12">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_10">
+        <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_20">
            <item>
@@ -883,7 +864,7 @@ Temporal cadence :
          <item>
           <widget class="QPlainTextEdit" name="histo_plainTextEdit">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -891,7 +872,13 @@ Temporal cadence :
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>110</height>
+             <height>70</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>256</width>
+             <height>70</height>
             </size>
            </property>
            <property name="plainText">
@@ -912,89 +899,89 @@ Temporal cadence :
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_21">
+        <layout class="QVBoxLayout" name="verticalLayout_10">
          <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Contrast Low:</string>
-           </property>
-          </widget>
+          <layout class="QHBoxLayout" name="horizontalLayout_21">
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Contrast Low:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="LOClineEdit"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="ContrastPlotpushButton_2">
+             <property name="text">
+              <string>Contrast Plot</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item>
-          <widget class="QLineEdit" name="LOClineEdit"/>
+          <layout class="QHBoxLayout" name="horizontalLayout_22">
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Contrast High:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="HIClineEdit"/>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>78</width>
+               <height>17</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
          <item>
-          <widget class="QPushButton" name="ContrastPlotpushButton_2">
-           <property name="text">
-            <string>Contrast Plot</string>
-           </property>
-          </widget>
+          <layout class="QHBoxLayout" name="horizontalLayout_12">
+           <item>
+            <widget class="QPushButton" name="RegionpushButton_2">
+             <property name="text">
+              <string>Region</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="fullhistpushButton">
+             <property name="text">
+              <string>Full Image</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_8">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_22">
-         <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Contrast High:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="HIClineEdit"/>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_9">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>78</width>
-             <height>17</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_12">
-         <item>
-          <widget class="QPushButton" name="RegionpushButton_2">
-           <property name="text">
-            <string>Region</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="fullhistpushButton">
-           <property name="text">
-            <string>Full Image</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_8">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_16">
            <item>
@@ -1101,6 +1088,45 @@ Temporal cadence :
         </layout>
        </item>
       </layout>
+     </widget>
+     <widget class="QPushButton" name="SaveHist_pushButton">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>630</y>
+        <width>121</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Save Histogram</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="MaskVelpushButton">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>630</y>
+        <width>81</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Mask Vel.</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="MaskSSpushButton">
+      <property name="geometry">
+       <rect>
+        <x>100</x>
+        <y>630</y>
+        <width>81</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Mask SS</string>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_5">
@@ -1809,7 +1835,7 @@ Temporal cadence :
          <rect>
           <x>10</x>
           <y>90</y>
-          <width>228</width>
+          <width>258</width>
           <height>39</height>
          </rect>
         </property>
@@ -1913,7 +1939,7 @@ Temporal cadence :
         <x>10</x>
         <y>110</y>
         <width>241</width>
-        <height>251</height>
+        <height>271</height>
        </rect>
       </property>
       <property name="layoutDirection">
@@ -1929,7 +1955,7 @@ Temporal cadence :
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>220</y>
+         <y>240</y>
          <width>85</width>
          <height>26</height>
         </rect>
@@ -1943,8 +1969,8 @@ Temporal cadence :
         <rect>
          <x>10</x>
          <y>20</y>
-         <width>202</width>
-         <height>191</height>
+         <width>204</width>
+         <height>211</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -2038,6 +2064,86 @@ Temporal cadence :
         </item>
        </layout>
       </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Page</string>
+     </attribute>
+     <widget class="QPlainTextEdit" name="plainTextEdit_2">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>30</y>
+        <width>231</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <property name="plainText">
+       <string>With this option you can select ans specific mask and erase vectors of selected region.</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="start_lassoButton">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>110</y>
+        <width>110</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Start</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="stop_lassoButton">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>110</y>
+        <width>110</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Stop</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>230</y>
+        <width>56</width>
+        <height>13</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Statistics</string>
+      </property>
+     </widget>
+     <widget class="QPlainTextEdit" name="statisticsplainTextEdit">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>260</y>
+        <width>251</width>
+        <height>321</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="LassoMaskpushButton">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>160</y>
+        <width>110</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Make Mask</string>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_7">
@@ -2200,7 +2306,7 @@ Temporal cadence :
       <property name="geometry">
        <rect>
         <x>40</x>
-        <y>350</y>
+        <y>390</y>
         <width>41</width>
         <height>21</height>
        </rect>
@@ -2213,7 +2319,7 @@ Temporal cadence :
       <property name="geometry">
        <rect>
         <x>100</x>
-        <y>350</y>
+        <y>390</y>
         <width>41</width>
         <height>21</height>
        </rect>
@@ -2226,7 +2332,7 @@ Temporal cadence :
       <property name="geometry">
        <rect>
         <x>30</x>
-        <y>310</y>
+        <y>340</y>
         <width>221</width>
         <height>27</height>
        </rect>
@@ -2250,7 +2356,7 @@ Temporal cadence :
         <x>0</x>
         <y>240</y>
         <width>271</width>
-        <height>64</height>
+        <height>76</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2311,8 +2417,8 @@ Temporal cadence :
    <widget class="QToolButton" name="WriteButton">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>500</y>
+      <x>320</x>
+      <y>530</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -2339,10 +2445,10 @@ Temporal cadence :
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>550</x>
-      <y>500</y>
+      <x>500</x>
+      <y>520</y>
       <width>253</width>
-      <height>23</height>
+      <height>41</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -2378,7 +2484,7 @@ Temporal cadence :
    <widget class="QPushButton" name="RestorepushButton_2">
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>760</x>
       <y>530</y>
       <width>85</width>
       <height>26</height>
@@ -2391,9 +2497,9 @@ Temporal cadence :
    <widget class="QGroupBox" name="AnalysisgroupBox">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>540</y>
-      <width>271</width>
+      <x>320</x>
+      <y>580</y>
+      <width>261</width>
       <height>51</height>
      </rect>
     </property>
@@ -2403,7 +2509,7 @@ Temporal cadence :
     <widget class="QSpinBox" name="InitspinBox">
      <property name="geometry">
       <rect>
-       <x>70</x>
+       <x>90</x>
        <y>20</y>
        <width>42</width>
        <height>23</height>
@@ -2416,7 +2522,7 @@ Temporal cadence :
     <widget class="QSpinBox" name="FinalspinBox">
      <property name="geometry">
       <rect>
-       <x>200</x>
+       <x>210</x>
        <y>20</y>
        <width>42</width>
        <height>23</height>
@@ -2431,7 +2537,7 @@ Temporal cadence :
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>51</width>
+       <width>81</width>
        <height>16</height>
       </rect>
      </property>
@@ -2444,7 +2550,7 @@ Temporal cadence :
       <rect>
        <x>140</x>
        <y>20</y>
-       <width>51</width>
+       <width>71</width>
        <height>16</height>
       </rect>
      </property>
@@ -2453,14 +2559,154 @@ Temporal cadence :
      </property>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="zoomgroupBox">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>570</y>
+      <width>241</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Zooming region</string>
+    </property>
+    <widget class="QSpinBox" name="xinf_spinBox">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>20</y>
+       <width>47</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="yinf_spinBox_2">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>50</y>
+       <width>47</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="ysup_spinBox_3">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>50</y>
+       <width>47</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="xsup_spinBox_4">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>20</y>
+       <width>47</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="xinf_label">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>20</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>xinf</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="yinf_label_2">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>50</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>yinf</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="xsup_label_3">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>20</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>xsup</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ysup_label_4">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>50</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ysup</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="PlotRegionpushButton">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>660</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Resize Window</string>
+    </property>
+   </widget>
+   <zorder>tabWidget</zorder>
+   <zorder>ImagetabWidget_2</zorder>
+   <zorder>MDToolstabWidget_2</zorder>
+   <zorder>WriteButton</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>RestorepushButton_2</zorder>
+   <zorder>AnalysisgroupBox</zorder>
+   <zorder>zoomgroupBox</zorder>
+   <zorder>PlotRegionpushButton</zorder>
+   <zorder></zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1112</width>
-     <height>19</height>
+     <width>1194</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -2573,9 +2819,7 @@ Temporal cadence :
    </property>
   </action>
  </widget>
- <resources>
-  <include location="Resources/logo.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>horizontalSlider</sender>

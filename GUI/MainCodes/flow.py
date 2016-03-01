@@ -67,8 +67,10 @@ def flow(cube):
 	X,Y=np.meshgrid(np.arange(0,aver.shape[1],1),np.arange(0,aver.shape[0],1))
 	#~ plt.xlim(0,(aver.shape[0]-1)*pix)
 	#~ plt.ylim(0,(aver.shape[1]-1)*pix)	
-	ax.imshow(aver.clip(min=-700,max=700),origin='low',cmap='gray')#, extent=(0,(aver.shape[1]-1)*pix,0,(aver.shape[0]-1)*pix))
+	#~ ax.imshow(cube[0,:,:].clip(min=45000,max=62000),origin='low',cmap='gray')#, extent=(0,(aver.shape[1]-1)*pix,0,(aver.shape[0]-1)*pix))
+	ax.imshow(aver,origin='low',cmap='gray')#, 
 	#~ ax.set_title('Velocity field applying LCT')
+	#~ X,Y = X[125:155,160:210],Y[125:155,160:210]
 	
 	M2=ma.masked_greater(aver,-150)
 	M1=ma.masked_less(aver,150)
@@ -77,22 +79,31 @@ def flow(cube):
 	vx2_kps = ma.masked_array(vx_kps,mask=M2.mask)
 	vy2_kps = ma.masked_array(vy_kps,mask=M2.mask)
 	
-	plt.quiver(X[::15,::15],Y[::15,::15],vx1_kps[::15,::15],vy1_kps[::15,::15],pivot='tail',color='blue',units='dots',scale=0.003,width=0.8)
-	plt.quiver(X[::15,::15],Y[::15,::15],vx2_kps[::15,::15],vy2_kps[::15,::15],pivot='tail',color='red',units='dots',scale=0.003,width=0.8)
+	#~ vx1_kps = vx1_kps[125:155,160:210]
+	#~ vy1_kps = vy1_kps[125:155,160:210]
+	#~ vx2_kps = vx2_kps[125:155,160:210]
+	#~ vy2_kps = vy2_kps[125:155,160:210]
+	
+	
+	
+	plt.quiver(X[::5,::5],Y[::5,::5],vx1_kps[::5,::5],vy1_kps[::5,::5],pivot='tail',color='blue',units='dots',scale=0.001,width=1.2)
+	plt.quiver(X[::5,::5],Y[::5,::5],vx2_kps[::5,::5],vy2_kps[::5,::5],pivot='tail',color='red',units='dots',scale=0.001,width=1.2)
 	#~ plt.axis([0,(aver.shape[1]-1)*pix,0,(aver.shape[0]-1)*pix])
 	#~ plt.quiver(X,Y,vx_kps,vy_kps,pivot='tail',color='blue',units='dots',scale=0.01,width=1.2)		
 	#~ plt.quiver(X[::3,::3],Y[::3,::3],vx_kps[::3,::3],vy_kps[::3,::3],pivot='tail',color='red',units='dots',scale=0.01,width=1.2)
-	ticksx = ticker.FuncFormatter(lambda vx1_kps, pos: '%.0f' % int(vx1_kps*pix))                                                                                                                                         
-	ax.xaxis.set_major_formatter(ticksx)
-	ticksy = ticker.FuncFormatter(lambda vy1_kps, pos: '{0:f}'.format(vy1_kps*pix))                                                                                                                                         
-	ax.yaxis.set_major_formatter(ticksy)
+	#~ ticksx = ticker.FuncFormatter(lambda vx1_kps, pos: '%.0f' % int(vx1_kps*pix))                                                                                                                                         
+	#~ ax.xaxis.set_major_formatter(ticksx)
+	#~ ticksy = ticker.FuncFormatter(lambda vy1_kps, pos: '{0:f}'.format(vy1_kps*pix))                                                                                                                                         
+	#~ ax.yaxis.set_major_formatter(ticksy)
+	plt.axis([160,210,125,155])
 	plt.draw()
 	print (time.clock() - start)
 	plt.show()
 	
 
 start = time.clock()
-filename='/home/hypnus1803/Desktop/TESIS_MSc./Codes/PYTHON/cube_aligne2.fit'
+#~ filename='/home/hypnus1803/Desktop/TESIS_MSc./Codes/PYTHON/cube_aligne2.fit'
+filename='/Users/joseivan/Desktop/datos_pruebas/Filtered_Images/cube_filered2_20110410_180000.fits'
 #~ cube=(restore(filename)).cube
 #~ cube = cube[:,:,15:265]
 #~ cube = cube[61:67,67:182,32:197]		

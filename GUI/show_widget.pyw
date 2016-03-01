@@ -4,7 +4,8 @@ Created on Mon Apr 27 14:11:48 2015
 
 @author: hypnus1803
 """
-import pickle as pk
+import cPickle as pk
+from numpy import ma
 import sys,os
 sys.path.append(os.getcwd()+'/'+'MainCodes')
 import time
@@ -12,8 +13,11 @@ from scipy.io.idl import readsav
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as mc
+import matplotlib.ticker as ticker  
 from matplotlib.widgets import  RectangleSelector
 from matplotlib.patches import Rectangle
+from matplotlib.widgets import LassoSelector
+from matplotlib.path import Path
 import numpy as np
 from flowmaker_2 import *
 from correlation import divergen
@@ -21,10 +25,11 @@ from astropy.io import fits
 from scipy.io import readsav as restore
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import *
+from PyQt4.QtCore import *
 from Vector_Velocities_with_Sunpy import *
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
-
+import sunpy
 __authors__ = ["Jose Ivan Campos Rozo", "Santiago Vargas Dominguez"]
 __email__ = "jicamposr@unal.edu.co"
 
@@ -70,7 +75,7 @@ class ImageCanvas3(FigureCanvas):
 	"""Class to represent the FigureCanvas widget"""
 	def __init__(self):
 		# setup Matplotlib Figure and Axis
-		self.fig = Figure(figsize=(2.5,4))
+		self.fig = Figure(figsize=(3,4))
 		self.ax = self.fig.add_subplot(111)
 
 		# initialization of the canvas
@@ -92,6 +97,7 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		self.ParentWindow = QtGui.QMainWindow()
 		self.setupUi(self.ParentWindow)
 		self.ParentWindow.show()
+		
 		self.xaxes = "x-arcsecs"
 		self.yaxes = "y-arcsecs"
 		self.menu1 = QtGui.QMenu()
@@ -124,7 +130,13 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		for item2 in self.maps2:
 			entry2 = self.menuCMAP2.addAction(item2)
 			QtCore.QObject.connect(entry2,QtCore.SIGNAL('triggered()'), lambda item2=item2: self.get_cmap(item2))
-			self.CMAP_contourtoolButton.setMenu(self.menuCMAP2)             
+			self.CMAP_contourtoolButton.setMenu(self.menuCMAP2)    
+		
+		
+		
+		
+		
+		         
 #        
 		
 		QtCore.QObject.connect(self.arcradioButton, QtCore.SIGNAL("clicked()"), self.Coords)
@@ -145,8 +157,8 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		
 		self.canvas3 = ImageCanvas3()
 		self.histoverticalLayout_12.insertWidget(1,self.canvas3)
-		self.widget_navigatorTool1= NavigationToolbar(self.canvas3, self.ParentWindow, coordinates=True)
-		self.histoverticalLayout_12.insertWidget(2,self.widget_navigatorTool1)
+		#~ self.widget_navigatorTool1= NavigationToolbar(self.canvas3, self.ParentWindow, coordinates=True)
+		#~ self.histoverticalLayout_12.insertWidget(2,self.widget_navigatorTool1)
 
 		
 		#####  Map parameters  #######
@@ -168,11 +180,22 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		self.PixelSelector_2.valueChanged[str].connect(self.select_pix_per_vec2)
 		self.rgb_mtpl_ini=(1,0,1)
 		QtCore.QObject.connect(self.pushButton, QtCore.SIGNAL("clicked()"), self.flow)
+		
+		QtCore.QObject.connect(self.PlotRegionpushButton, QtCore.SIGNAL("clicked()"), self.plot_region)
+		
 #        QtCore.QObject.connect(self.ColorSelector, QtCore.SIGNAL("clicked()"), self.select_color)
 		QtCore.QObject.connect(self.fullImageButton, QtCore.SIGNAL("clicked()"), self.plot_full)
 		
 		########## Connect functions of histograms   ################
 		QtCore.QObject.connect(self.fullhistpushButton, QtCore.SIGNAL("clicked()"), self.HistogramFull)
+		QtCore.QObject.connect(self.MaskVelpushButton, QtCore.SIGNAL("clicked()"), self.HistoMaskVel)
+		QtCore.QObject.connect(self.MaskSSpushButton, QtCore.SIGNAL("clicked()"), self.HistoMaskSS)
+		
+		
+		
+		
+		
+		
 		QtCore.QObject.connect(self.ContrastPlotpushButton_2, QtCore.SIGNAL("clicked()"), self.CutLevels)
 		QtCore.QObject.connect(self.RestorepushButton_2, QtCore.SIGNAL("clicked()"), self.Restore)
 		
@@ -184,6 +207,17 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		######## Connect Functions of Divergen    ###################
 		QtCore.QObject.connect(self.plot_diverpushButton, QtCore.SIGNAL("clicked()"), self.DivergencePlot)
 		QtCore.QObject.connect(self.ColorSelector_2, QtCore.SIGNAL("clicked()"), self.select_color)
+		
+		
+		QtCore.QObject.connect(self.start_lassoButton, QtCore.SIGNAL("clicked()"), self.SelectionLasso)
+		QtCore.QObject.connect(self.stop_lassoButton, QtCore.SIGNAL("clicked()"), self.disconnect)
+		QtCore.QObject.connect(self.LassoMaskpushButton, QtCore.SIGNAL("clicked()"), self.PlotMaskLasso)
+		
+		QtCore.QObject.connect(self.SaveHist_pushButton, QtCore.SIGNAL("clicked()"), self.SaveHisto)
+		
+		
+		#~ self.header = ["Key","Value"]
+		#~ self.HeadertableWidget.setHorizontalHeaderLabels(self.header)
 
 	   
 		
@@ -194,9 +228,11 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		############ Connet functions of velocities #########################
 		self.iminlineEdit.textChanged[str].connect(self.int_min)
 		self.imaxlineEdit.textChanged[str].connect(self.int_max)
-#       
+		#~ print dir(self.tableWidget)
+		#~ print cualquiera
 		
 		#####################################################################
+		#~ print dir(self.canvas3.fig)
 				   
 		
 	def track_coord(self,event):
@@ -204,6 +240,18 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		self.ypos = event.ydata
 		return self.xpos,self.ypos
 		
+		
+		
+		
+	def header2table(self,array,qtable):
+		qtable.setColumnCount(2)
+		qtable.setRowCount(len(array))
+		for row in range(len(array)):
+			for column in range(2):
+				qtable.setItem(row,column,QTableWidgetItem(QString("%1").arg(array[row][column])))
+		
+		
+	
 	
 	def cube_do_open(self):
 		cube_data = QtGui.QFileDialog.getOpenFileName(self.ParentWindow, 'Select a Cube', '/home', 
@@ -218,18 +266,31 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 			hdu = fits.open(filename)
 			self.cube = hdu[0].data
 			self.hdr_cube = hdu[0].header
-		self.image = self.cube[0,:,:]
-		self.X,self.Y = np.meshgrid(np.arange(self.image.shape[1])*0.16,np.arange(self.image.shape[0])*0.16)
+		self.image = self.cube[self.InitspinBox.value(),:,:]
+		self.X,self.Y = np.meshgrid(np.arange(self.image.shape[1])*float(self.PixelsizeSelector.value()),np.arange(self.image.shape[0])*float(self.PixelsizeSelector.value()))
 		self.canvas1.ax.imshow(self.image,origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
+		self.xaxes = "x-arcsecs"
+		self.yaxes = "y-arcsecs"
 		self.canvas1.ax.set_xlabel(self.xaxes)
 		self.canvas1.ax.set_ylabel(self.yaxes)
 		self.canvas1.show()
 		self.canvas1.draw()
 		self.FinalspinBox.setValue(self.cube.shape[0])
+		self.xsup_spinBox_4.setValue(self.cube.shape[2])
+		self.ysup_spinBox_3.setValue(self.cube.shape[1])
 		QtGui.QMessageBox.information(self.ParentWindow, 'First Steps', ''' Firstly, you need to calculate the flow \n field before using visualization tools ''',
 			QMessageBox.Ok)
 		
+		self.header = ["Key","Value"]
+		self.data_list = self.hdr_cube.items()
+		
+		self.header2table(np.array(self.data_list),self.HeadertableWidget)
+		
+		
+		
+		
 		return self.cube,self.image
+	
 		
 	
 	
@@ -239,9 +300,9 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		
 		if os.access(image_data,os.R_OK):
 			filename = str(image_data)
-		hdu = fits.open(filename)
-		image = hdu[0].data
-		header_im = hdu[0].header
+		hdu = fits.open(filename,checksum=True)
+		image = hdu[1].data
+		#~ header_im = hdu[1].header
 		if len(header_im) > 9:
 			self.InfoplainTextEdit.setPlainText("Name : "+header_im["TELESCOP"]+"-"+header_im["INSTRUME"]+" "+header_im["DATE_OBS"]+"\n\n"+\
 			"Dimensions : "+str(header_im["NAXIS1"])+"x"+str(header_im["NAXIS2"])+"\n\n"\
@@ -252,6 +313,11 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 			"Dimensions : "+str(header_im["NAXIS1"])+"x"+str(header_im["NAXIS2"])+"\n\n"\
 			"Min : "+str(image.min())+"\n"+ "Max : "+str(image.max())+"\n"+ "Pixel Size : UNKNOWN \n"+"Temporal Cadence : UNKNOWN")
 	
+		
+		#~ self.data_list = header_im.items()
+		
+		#~ self.header2table(np.array(self.data_list),self.HeadertableWidget)
+		
 		self.canvas2.ax.imshow(image,origin="lower",cmap="gray")
 		self.canvas2.ax.set_title("Context Image")
 		self.canvas2.show()
@@ -345,9 +411,13 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		self.mag = np.sqrt(self.vx_kps*self.vx_kps + self.vy_kps*self.vy_kps)
 		VH= np.mean(self.mag)
 		FWHM=fwhm/fwhm_arcsec
-		self.InfoplainTextEdit.appendPlainText("Maximum velocity (km/s) : "+str(v_limit*factor)+"\n"+\
-		"FWHM of the window for tracking (pixel/arc) : "+str(FWHM)+"\n"+\
-		"Mean Horizontal Velocity (km/s) : "+str(VH))
+		self.InfoplainTextEdit.appendPlainText("Maximum limit velocity (km/s) : "+str(v_limit*factor)+"\n"+\
+		#~ "FWHM of the window for tracking (pixel/arc) : "+str(FWHM)+"\n"+\
+		"Mean Horizontal Velocity (km/s) : "+str(VH)+"\n"+\
+		"Maximum Horizontal Velocity (km/s) : "+str(np.max(self.mag))+"\n"+\
+		"Minimum Horizontal Velocity (km/s) : "+str(np.min(self.mag)))
+		
+		
 		self.vminlineEdit.setText(str(np.round(self.mag.min(),2)))
 		self.vmaxlineEdit.setText(str(np.round(self.mag.max(),2)))
 		self.iminlineEdit.setText(str(int(cube[0,:,:].min())))
@@ -359,7 +429,7 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		print self.div.mean()
 		return self.vx_kps,self.vy_kps,self.vz_kps,self.mag,self.div
 	def WriteData(self):
-		filename = QtGui.QFileDialog.getSaveFileName(self.ParentWindow, 'Save File', os.getenv('HOME'))
+		filename = QtGui.QFileDialog.getSaveFileName(self.ParentWindow, 'Save Image', os.getenv('HOME'))
 		struct = {"vx_kps":self.vx_kps,"vy_kps":self.vy_kps,
 					   "vz_kps":self.vz_kps,"divergences":self.div}
 		output = open(filename,"wb")
@@ -370,6 +440,7 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 	def list_of_variables_to_Vectors(self,ppv2,pivot2,unit2,width2,scale2):
 		list2=[ppv2,pivot2,unit2,width2,scale2]
 		return list2
+		
 	def plot_full(self):
 		
 		list2=self.list_of_variables_to_Vectors(int(self.PixelSelector.value()),
@@ -379,14 +450,39 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 												float(self.ScaleSelector.value()))
 		self.canvas1.ax.clear()
 		self.canvas1.ax.set_title('Velocity field applying LCT')
-		self.canvas1.ax.imshow(self.cube[0,:,:],origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
+		self.canvas1.ax.imshow(self.cube[self.InitspinBox.value(),:,:],origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
 		self.canvas1.ax.set_xlabel(self.xaxes)
 		self.canvas1.ax.set_ylabel(self.yaxes)
 		self.canvas1.ax.quiver(self.X[::list2[0],::list2[0]],self.Y[::list2[0],::list2[0]],
 							  self.vx_kps[::list2[0],::list2[0]],self.vy_kps[::list2[0],::list2[0]],
-							  pivot=list2[1],color=self.rgb_mtpl_iniHi,units=list2[2],scale=list2[4],width=list2[3])
+							  pivot=list2[1],color=self.rgb_mtpl_iniHi,units=list2[2],scale=1./list2[4],width=list2[3])
 		self.canvas1.show()
 		self.canvas1.draw()
+	
+	#Plotting just a region
+	
+	def plot_region(self):
+		list2=self.list_of_variables_to_Vectors(int(self.PixelSelector.value()),
+												str(self.PivotSelector.currentText()),
+												str(self.UnitsSelector.currentText()),
+												float(self.WidthSelector.value()),
+												float(self.ScaleSelector.value()))
+		self.canvas1.ax.clear()
+		self.canvas1.ax.set_title('Velocity field applying LCT')
+		self.im = self.cube[self.InitspinBox.value(),self.yinf_spinBox_2.value():self.ysup_spinBox_3.value(),self.xinf_spinBox.value():self.xsup_spinBox_4.value()]
+		self.canvas1.ax.imshow(self.im,origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
+		self.canvas1.ax.set_xlabel(self.xaxes)
+		self.canvas1.ax.set_ylabel(self.yaxes)
+		self.canvas1.ax.quiver(self.X[::list2[0],::list2[0]],self.Y[::list2[0],::list2[0]],
+							  self.maskVelx1[::list2[0],::list2[0]],self.maskVely1[::list2[0],::list2[0]],
+							  pivot=list2[1],color=self.rgb_mtpl_iniHi,units=list2[2],scale=1./list2[4],
+							  scale_units="xy",width=list2[3])
+		#~ if (self.arcradioButton.isChecked() == True):
+		#~ self.canvas1.ax.axis([self.xinf_spinBox.value(),self.xsup_spinBox_4.value(),self.yinf_spinBox_2.value(),self.ysup_spinBox_3.value()])
+			
+		self.canvas1.show()
+		self.canvas1.draw()
+		
 	
 	### add menu to maskpushButton ####
 	
@@ -409,7 +505,7 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 #        
 		
 		self.canvas1.ax.clear()        
-		self.canvas1.ax.imshow(self.cube[0,:,:],origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
+		self.canvas1.ax.imshow(self.cube[self.InitspinBox.value(),:,:],origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
 		self.canvas1.ax.set_xlabel(self.xaxes)
 		self.canvas1.ax.set_ylabel(self.yaxes)
 		self.vx1_kps = np.copy(self.vx_kps)
@@ -418,16 +514,93 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		self.vy1_kps = np.ma.masked_where(self.mag < list3[0],self.vy1_kps)
 		self.vx1_kps = np.ma.masked_where(self.mag > list3[1],self.vx1_kps)
 		self.vy1_kps = np.ma.masked_where(self.mag > list3[1],self.vy1_kps)
+		
+		#~ self.mag1 = np.sqrt(self.vx1_kps*self.vx1_kps + self.vy1_kps*self.vy1_kps)
+		self.mag1 = np.sqrt(np.power(self.vx1_kps,2)+np.power(self.vy1_kps,2))
+		
+		
+		self.statisticsplainTextEdit.appendPlainText("Statistics with Mask of Velocities \n"+\
+		
+		"Mean Horizontal Velocity (km/s) : "+str(np.mean(self.mag1))+"\n"+\
+		"Maximum Horizontal Velocity (km/s) : "+str(np.max(self.mag1))+"\n"+\
+		"Minimum Horizontal Velocity (km/s) : "+str(np.min(self.mag1)))
 
 		self.canvas1.ax.set_title('Mask Velocity field applying LCT')
 		self.canvas1.ax.quiver(self.X[::list2[0],::list2[0]],self.Y[::list2[0],::list2[0]],
 							  self.vx1_kps[::list2[0],::list2[0]],self.vy1_kps[::list2[0],::list2[0]],
-							  pivot=list2[1],color=self.rgb_mtpl_iniHi,units=list2[2],scale=list2[4],width=list2[3])
-
+							  pivot=list2[1],color=self.rgb_mtpl_iniHi,units=list2[2],scale=1./list2[4],
+							  scale_units="xy",width=list2[3])
+		
+		
 		
 		self.canvas1.show()
 		self.canvas1.draw()
-
+		
+		self.maskVelx1 = self.vx1_kps
+		self.maskVely1 = self.vy1_kps
+		
+		
+		
+		return self.maskVelx1,self.maskVely1,self.mag1
+		
+		
+	def PlotMaskLasso(self):
+		
+		list3 = self.list_val_vel(float(self.vminlineEdit.text()),float(self.vmaxlineEdit.text()))
+		
+		list2=self.list_of_variables_to_Vectors(int(self.PixelSelector.value()),
+												str(self.PivotSelector.currentText()),
+												str(self.UnitsSelector.currentText()),
+												float(self.WidthSelector.value()),
+												float(self.ScaleSelector.value()))
+		
+		self.canvas1.ax.clear()        
+		self.canvas1.ax.imshow(self.cube[self.InitspinBox.value(),:,:],origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
+		self.canvas1.ax.set_xlabel(self.xaxes)
+		self.canvas1.ax.set_ylabel(self.yaxes)
+		
+		
+		#~ self.vx1 = self.maskVelx1.copy()
+		#~ self.vy1 = self.maskVely1.copy()
+		#~ self.M = np.zeros(self.vx1.shape, dtype='bool')
+		#~ self.M[np.where(self.new_mask==0.)] = True
+		#~ self.vx1 = np.ma.masked_array(self.vx1, mask = self.M)
+		#~ self.vy1 = np.ma.masked_array(self.vy1, mask = self.M)
+		
+		
+		
+		self.mask = self.new_mask
+		
+		self.vx1 = np.copy(self.vx_kps)
+		self.vy1 = np.copy(self.vy_kps)
+		self.vx1 = np.ma.masked_where(self.mag < list3[0],self.vx1)
+		self.vy1 = np.ma.masked_where(self.mag < list3[0],self.vy1)
+		self.vx1 = np.ma.masked_where(self.mag > list3[1],self.vx1)
+		self.vy1 = np.ma.masked_where(self.mag > list3[1],self.vy1)
+		
+		self.vx1 = np.ma.masked_where(self.mask == 0.,self.vx1)
+		self.vy1 = np.ma.masked_where(self.mask == 0.,self.vy1)
+		
+		
+		self.mag2 = np.sqrt(np.power(self.vx1,2) + np.power(self.vy1,2))
+		
+		self.statisticsplainTextEdit.appendPlainText("Statistics with Mask removing Sunspots regions \n"+\
+		
+		"Mean Horizontal Velocity (km/s) : "+str(np.mean(self.mag2))+"\n"+\
+		"Maximum Horizontal Velocity (km/s) : "+str(np.max(self.mag2))+"\n"+\
+		"Minimum Horizontal Velocity (km/s) : "+str(np.min(self.mag2)))
+		
+		self.canvas1.ax.quiver(self.X[::list2[0],::list2[0]],self.Y[::list2[0],::list2[0]],
+							  self.vx1[::list2[0],::list2[0]],self.vy1[::list2[0],::list2[0]],
+							  pivot=list2[1],color=self.rgb_mtpl_iniHi,units=list2[2],scale=1./list2[4],
+							  scale_units="xy",width=list2[3])
+							  
+		
+							  
+		self.canvas1.show()
+		self.canvas1.draw()
+		
+		return self.vx1,self.vy1,self.mag2
 
 
 ###########  Functions to create intensities mask ######################
@@ -448,7 +621,7 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 												float(self.ScaleSelector.value()))
 #        
 		self.canvas1.ax.clear()
-		self.canvas1.ax.imshow(self.cube[0,:,:],origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
+		self.canvas1.ax.imshow(self.cube[self.InitspinBox.value(),:,:],origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
 		self.canvas1.ax.set_xlabel(self.xaxes)
 		self.canvas1.ax.set_ylabel(self.yaxes)
 		self.M2 = np.ma.masked_greater(self.cube[0,:,:],list4[0])
@@ -462,15 +635,21 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		self.canvas1.ax.set_title('Mask Velocity field applying LCT')
 		self.canvas1.ax.quiver(self.X[::list2[0],::list2[0]],self.Y[::list2[0],::list2[0]],
 							  self.vx1_kps[::list2[0],::list2[0]],self.vy1_kps[::list2[0],::list2[0]],
-							  pivot=list2[1],color=self.rgb_mtpl_iniHi,units=list2[2],scale=list2[4],width=list2[3])
+							  pivot=list2[1],color=self.rgb_mtpl_iniHi,units=list2[2],scale=1./list2[4],width=list2[3])
 		self.canvas1.ax.quiver(self.X[::list2[0],::list2[0]],self.Y[::list2[0],::list2[0]],
 							  self.vx2_kps[::list2[0],::list2[0]],self.vy2_kps[::list2[0],::list2[0]],
-							  pivot=list2[1],color=self.rgb_mtpl_iniLo,units=list2[2],scale=list2[4],width=list2[3])
+							  pivot=list2[1],color=self.rgb_mtpl_iniLo,units=list2[2],scale=1./list2[4],width=list2[3])
 		
 		self.canvas1.show()
 		self.canvas1.draw()
-
-	   
+		
+		self.maskIntx1 = self.vx1_kps
+		self.maskInty1 = self.vy1_kps
+		self.maskIntx2 = self.vx2_kps
+		self.maskInty2 = self.vy2_kps
+		
+		return self.maskIntx1, self.maskInty1, self.maskIntx2, self.maskInty2
+		
 
 		
  ##################################################################################
@@ -527,15 +706,18 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 	
 	def HistogramFull(self):
 		if self.pixelradioButton.isChecked() == True:
-			self.data_flat = self.cube.flatten()
+			self.data_flat = self.cube[self.InitspinBox.value(),:,:].flatten()
 			self.bins = float(self.lineEdit_3.text())
 			self.canvas3.ax.clear()            
 			self.canvas3.ax.hist(self.data_flat,self.bins,facecolor='b',edgecolor='b')
-			self.canvas3.ax.set_ylabel("Frequency",fontsize=10)
-			self.canvas3.ax.set_xlabel("Inensity Value (Pixel value)",fontsize=10)
-			self.canvas3.ax.tick_params(axis='x', labelsize=8)
-			self.canvas3.ax.tick_params(axis='y', labelsize=8)
-			self.canvas3.ax.ticklabel_format(style='sci',axis='y',scilimits=(0,0))
+			self.canvas3.ax.set_title("Intensity Distribution",fontsize=10)
+			self.canvas3.ax.set_ylabel("Frequency",fontsize=9)
+			self.canvas3.ax.set_xlabel("Intensity Value (Pixel value)",fontsize=9)
+			self.canvas3.ax.xaxis.set_label_coords(0.5, -0.065)
+			self.canvas3.ax.tick_params(axis='x', labelsize=6.5)
+			self.canvas3.ax.tick_params(axis='y', labelsize=6.5)
+			#~ self.canvas3.ax.ticklabel_format(style='sci',axis='x',scilimits=(0,0))
+			#~ self.canvas3.ax.ticklabel_format(style='sci',axis='y',scilimits=(0,0))
 			self.canvas3.ax.grid()
 			self.canvas3.show()
 			self.canvas3.draw()
@@ -545,6 +727,12 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 			self.bins = float(self.lineEdit_3.text())
 			self.canvas3.ax.clear()
 			self.canvas3.ax.hist(self.vel_flat,self.bins,facecolor='b',edgecolor='b')
+			self.canvas3.ax.set_title("Velocity Distribution",fontsize=10)
+			self.canvas3.ax.set_ylabel("Frequency",fontsize=9)
+			self.canvas3.ax.set_xlabel("Velocity Value (km/s)",fontsize=9)
+			self.canvas3.ax.xaxis.set_label_coords(0.5, -0.065)
+			self.canvas3.ax.tick_params(axis='x', labelsize=6.5)
+			self.canvas3.ax.tick_params(axis='y', labelsize=6.5)
 			self.canvas3.ax.grid()
 			self.canvas3.show()
 			self.canvas3.draw()
@@ -554,6 +742,7 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 			self.bins = float(self.lineEdit_3.text())
 			self.canvas3.ax.clear()
 			self.canvas3.ax.hist(self.data_flat,self.bins,facecolor='b',edgecolor='b',log = True)
+			self.canvas3.ax.set_title("Log Intensity Distribution",fontsize=10)
 			self.canvas3.ax.grid()
 			self.canvas3.show()
 			self.canvas3.draw()
@@ -563,14 +752,53 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 			self.bins = float(self.lineEdit_3.text())
 			self.canvas3.ax.clear()
 			self.canvas3.ax.hist(self.vel_flat,self.bins,facecolor='b',edgecolor='b',log = True)
+			self.canvas3.ax.set_title("Log Velocity Distribution",fontsize=10)
 			self.canvas3.ax.grid()
 			self.canvas3.show()
 			self.canvas3.draw()
 			
+	def HistoMaskVel(self):
+		if self.velocityradioButton_2.isChecked() == True:
+			#~ self.vel_flat2 = self.mag1.flatten()
+			self.vel_flat2 = self.mag1[~self.mag1.mask]
+			self.bins = float(self.lineEdit_3.text())
+			self.canvas3.ax.clear()
+			self.canvas3.ax.hist(self.vel_flat2,self.bins,facecolor='b',edgecolor='b')
+			self.canvas3.ax.set_title("Velocity Distribution",fontsize=10)
+			self.canvas3.ax.set_ylabel("Frequency",fontsize=9)
+			self.canvas3.ax.set_xlabel("Velocity Value (km/s)",fontsize=9)
+			self.canvas3.ax.xaxis.set_label_coords(0.5, -0.065)
+			self.canvas3.ax.tick_params(axis='x', labelsize=6.5)
+			self.canvas3.ax.tick_params(axis='y', labelsize=6.5)
+			self.canvas3.ax.grid()
+			self.canvas3.show()
+			self.canvas3.draw()
+		
+	def HistoMaskSS(self):
+		if self.velocityradioButton_2.isChecked() == True:
+			self.vel_flat3 = self.mag2[~self.mag2.mask]
+			self.bins = float(self.lineEdit_3.text())
+			self.canvas3.ax.clear()
+			self.canvas3.ax.hist(self.vel_flat3,self.bins,facecolor='b',edgecolor='b')
+			self.canvas3.ax.set_title("Velocity Distribution",fontsize=10)
+			self.canvas3.ax.set_ylabel("Frequency",fontsize=9)
+			self.canvas3.ax.set_xlabel("Velocity Value (km/s)",fontsize=9)
+			self.canvas3.ax.xaxis.set_label_coords(0.5, -0.065)
+			self.canvas3.ax.tick_params(axis='x', labelsize=6.5)
+			self.canvas3.ax.tick_params(axis='y', labelsize=6.5)
+			self.canvas3.ax.grid()
+			self.canvas3.show()
+			self.canvas3.draw()
+	
+	def SaveHisto(self):
+		filename = QtGui.QFileDialog.getSaveFileName(self.ParentWindow, 'Save Image', os.getenv('HOME'))
+		filename = str(filename)
+		self.canvas3.fig.savefig(filename,format="png")
+			
 	
 	def CutLevels(self):
 		self.canvas1.ax.clear()
-		self.canvas1.ax.imshow(self.cube[0,:,:].clip(min=float(self.LOClineEdit.text()),max = float(self.HIClineEdit.text())),origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
+		self.canvas1.ax.imshow(self.cube[self.InitspinBox.value(),:,:].clip(min=float(self.LOClineEdit.text()),max = float(self.HIClineEdit.text())),origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
 		self.canvas1.ax.set_xlabel(self.xaxes)
 		self.canvas1.ax.set_ylabel(self.yaxes)
 		self.canvas1.show()
@@ -580,7 +808,7 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 	
 	def Restore(self):
 		self.canvas1.ax.clear()
-		self.canvas1.ax.imshow(self.cube[0,:,:],origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
+		self.canvas1.ax.imshow(self.cube[self.InitspinBox.value(),:,:],origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
 		self.canvas1.ax.set_xlabel(self.xaxes)
 		self.canvas1.ax.set_ylabel(self.yaxes)
 		self.canvas1.show()
@@ -600,7 +828,7 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		self.lo_color = self.rgb_mtpl_iniLo
 
 		self.canvas1.ax.clear()
-		self.canvas1.ax.imshow(self.image,origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
+		self.canvas1.ax.imshow(self.cube[self.InitspinBox.value(),:,:],origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
 		self.canvas1.ax.set_xlabel(self.xaxes)
 		self.canvas1.ax.set_ylabel(self.yaxes)
 
@@ -612,25 +840,27 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		self.vy2_kps = np.ma.masked_array(self.vy_kps,mask=self.M2.mask)
 
 		self.canvas1.ax.set_title('Overlay Mask')
-		self.canvas1.ax.quiver(self.X[::3,::3],self.Y[::3,::3],self.vx1_kps[::3,::3],self.vy1_kps[::3,::3],
+		self.canvas1.ax.quiver(self.X[::1,::1],self.Y[::1,::1],self.vx1_kps[::1,::1],self.vy1_kps[::1,::1],
 							  pivot="tail",color=self.rgb_mtpl_iniHi,units="dots",scale=15.0,width=1.9,alpha = self.opacity)
-		self.canvas1.ax.quiver(self.X[::3,::3],self.Y[::3,::3], self.vx2_kps[::3,::3],self.vy2_kps[::3,::3],
-							  pivot="tail",color=self.rgb_mtpl_iniLo,units="dots",scale=15.0,width=1.9,alpha = self.opacity)
+		self.canvas1.ax.quiver(self.X[::1,::1],self.Y[::1,::1], self.vx2_kps[::1,::1],self.vy2_kps[::1,::1],
+							  pivot="tail",color=self.rgb_mtpl_iniLo,units="dots",scale=15.0,width=4.9,alpha = self.opacity)
 		
 		self.canvas1.show()
 		self.canvas1.draw()
 		
 	def Coords(self):
 		if (self.arcradioButton.isChecked() == True):
-			self.X,self.Y = np.meshgrid(np.arange(self.image.shape[1])*float(self.PixelsizeSelector.value()),np.arange(self.image.shape[0])*float(self.PixelsizeSelector.value()))
+			self.X,self.Y = np.meshgrid(np.arange(self.xinf_spinBox.value(),self.xsup_spinBox_4.value())*float(self.PixelsizeSelector.value()),np.arange(self.yinf_spinBox_2.value(),self.ysup_spinBox_3.value())*float(self.PixelsizeSelector.value()))
 			self.xaxes = "x-arcsecs"
 			self.yaxes = "y-arcsecs"
 		
 		if (self.meter_radioButton_2.isChecked() == True):
-			self.X,self.Y = np.meshgrid(np.arange(self.image.shape[1])*float(self.PixelsizeSelector.value())*725/1000,np.arange(self.image.shape[0])*float(self.PixelsizeSelector.value())*725/1000)
+			self.X,self.Y = np.meshgrid(np.arange(self.xinf_spinBox.value(),self.xsup_spinBox_4.value())*float(self.PixelsizeSelector.value())*725/1000,np.arange(self.yinf_spinBox_2.value(),self.ysup_spinBox_3.value())*float(self.PixelsizeSelector.value())*725/1000)
 			self.xaxes = "x-Mm"
 			self.yaxes = "y-Mm"
 		print self.xaxes,type(self.xaxes)
+		print self.PixelsizeSelector.value()
+		print self.image.shape[1],self.image.shape[0]
 		return self.X,self.Y,self.xaxes,self.yaxes
 	   
 	def select_pivot2(self,pivot1):
@@ -655,7 +885,7 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 	def DivergencePlot(self):
 		
 		self.canvas1.ax.clear()  
-		self.canvas1.ax.imshow(self.image,origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
+		self.canvas1.ax.imshow(self.cube[self.InitspinBox.value(),:,:],origin="lower",cmap="gray",extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
 		self.canvas1.ax.set_xlabel(self.xaxes)
 		self.canvas1.ax.set_ylabel(self.yaxes)
 		if self.vecradioButton.isChecked() == True:
@@ -674,7 +904,8 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 		
 			self.canvas1.ax.quiver(self.X[::list2[0],::list2[0]],self.Y[::list2[0],::list2[0]],
 							  self.vx_kps[::list2[0],::list2[0]],self.vy_kps[::list2[0],::list2[0]],
-							  pivot=list2[1],color=self.rgb_mtpl_ini,units=list2[2],scale=list2[4],width=list2[3])     
+							  pivot=list2[1],color=self.rgb_mtpl_ini,units=list2[2],scale=1./list2[4],width=list2[3]) 
+								  
 		elif self.contourradioButton.isChecked() == True:
 			print "selected contour"
 			self.alpha2 = float(self.doubleSpinBox.value())
@@ -702,11 +933,143 @@ class AdvancedWidget(Ui_FlowsMainWindow):
 
 		self.canvas1.show()
 		self.canvas1.draw()
+
+
+
+
+
+	
+
+
+
+
+
+
+	def SelectionLasso(self):
+		"""Select indices from a matplotlib collection using `LassoSelector`.
+
+		Parameters
+		----------
+		ax : :class:`~matplotlib.axes.Axes`
+			Axes to interact with.
+
+		data : Solar map
+
+		"""
+		self.canvas1.ax.clear()
+		
+		self.im = self.cube[self.InitspinBox.value(),self.yinf_spinBox_2.value():self.ysup_spinBox_3.value(),self.xinf_spinBox.value():self.xsup_spinBox_4.value()]
+		self.data = self.canvas1.ax.imshow(self.im,origin="lower",cmap="gray")#,extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
+		
+		
+		self.canvas1.draw_idle()
+		
+		
+
+		####################### NO borrar, esta sección funciona bien con la imagen de contextoooo ################
+
+		def onselect(verts):
+
+			l = self.data.get_array()
+			ny,nx = l.shape
+			
+			self.arrayTest = np.ones([ny,nx])
+			
+			for i in verts:
+
+				self.arrayTest[i[::-1]] = 0.
+			
+
+
+			for j in range(ny):
+				indx = np.where(self.arrayTest[j,:]==0)[0]
+
+				if len(indx) > 1:
+					self.arrayTest[j,indx[0]:indx[-1]]=0
+			
+
+			self.data.set_data(self.data.get_array()*self.arrayTest)
+			
+			
+			self.canvas1.draw_idle()
+		################################################################################################################
+		
+		
+			
+		self.im = self.cube[self.InitspinBox.value(),self.yinf_spinBox_2.value():self.ysup_spinBox_3.value(),self.xinf_spinBox.value():self.xsup_spinBox_4.value()]
+		#~ y,x = self.im.shape
+		print(self.im.mean())
+		self.data = self.canvas1.ax.imshow(self.im,origin="lower",cmap="gray")#,extent=(self.X.min(),self.X.max(),self.Y.min(),self.Y.max()))
+		
+		
+		
+		
+		
+		if (self.arcradioButton.isChecked() == True):
+			self.ticks11 = ticker.FuncFormatter(lambda x, pos:"{0:g}".format(int(x*0.505)))
+			self.ticks12 = ticker.FuncFormatter(lambda y, pos:"{0:g}".format(int(y*0.505)))
+			self.canvas1.ax.xaxis.set_major_formatter(self.ticks11)
+			self.canvas1.ax.yaxis.set_major_formatter(self.ticks12)
+			self.canvas1.ax.set_xlabel("x-arcsecs")
+			self.canvas1.ax.set_ylabel("y-arcsecs")
+		
+		if (self.meter_radioButton_2.isChecked() == True):
+			self.ticks11 = ticker.FuncFormatter(lambda x, pos:"{0:g}".format(int(x*0.505*(725./1000.))))
+			self.ticks12 = ticker.FuncFormatter(lambda y, pos:"{0:g}".format(int(y*0.505*(725./1000.))))
+			self.canvas1.ax.xaxis.set_major_formatter(self.ticks11)
+			self.canvas1.ax.yaxis.set_major_formatter(self.ticks12)
+			self.canvas1.ax.set_xlabel("x-Mm")
+			self.canvas1.ax.set_ylabel("y-Mm")
+			
+		#~ print (self.data.get_array()).shape    # Original funciona con el imshow
+		
+		self.lasso = LassoSelector(self.canvas1.ax, onselect,useblit=True,lineprops = dict(color='blue', linestyle='-',
+				 linewidth = 2, alpha=0.5))
+		self.canvas1.show()
+
+		self.canvas1.draw()
+		
+		raw_input('Press any key to exit')
+		
+		
+		
+		return self.lasso
+		
+
+	def disconnect(self):
+		self.lasso.disconnect_events()
+		#test para adquirir estadisticas
+		print((self.data.get_array()).mean())
+		self.new_mask = self.data.get_array()
+		
+		#~ self.canvas1.draw_idle()
+		
+		
+		
+		return self.new_mask
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 
 		
-		
-		
+
+
+
+
 
 		
 	
