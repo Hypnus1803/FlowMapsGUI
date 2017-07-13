@@ -46,8 +46,8 @@ from plotOptions import *
 from fitOptions import *
 
 import sunpy
-__authors__ = [u"Jose Iván Campos Rozo", u"Santiago Vargas Domínguez"]
-__email__ = "jicamposr@unal.edu.co"
+__authors__ = [u"Jose Iván Campos Rozo", u"Santiago Vargas Domínguez","Sandeers Gutiérrez"]
+__email__ = ["jicamposr@unal.edu.co","svargasd@unal.edu.co","ing.sanders@gmail.com"]
 
 
 try:
