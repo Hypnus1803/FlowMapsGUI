@@ -46,7 +46,7 @@ def flowmaker_2(mov,lag,fwhm,reb,keyword=None):
 	"""
 	shf=1
 	std1=fwhm*0.424661
-	std2=std1/reb
+	std2=int(std1/reb)
 	#s1=size(mov)
 	dims = np.ndim(mov)
 	n_im = mov.shape[0]

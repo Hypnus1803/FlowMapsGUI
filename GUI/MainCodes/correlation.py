@@ -80,9 +80,9 @@ def qfit2(cc=None):
 		a4=a4+cc[0,2]-cc[1,0]+cc[1,2]-cc[2,0]
 		a1=.5*a1-cc[0,1]-cc[1,1]-cc[2,1]
 		a2=.5*a2-cc[1,0]-cc[1,1]-cc[1,2]
-	print a1,a2,a3,a4,a5
+	print(a1,a2,a3,a4,a5)
 	dim=((64./9)*a1*a2-a3**2)*1.5
-	print dim
+	print(dim)
 	cx=(a3*a5-((8./3)*a2*a4))/dim
 	cy=(a3*a4-8./3*a1*a5)/dim
 	return numpy.round(cx,6),numpy.round(cy,6)

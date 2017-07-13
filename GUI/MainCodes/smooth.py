@@ -79,7 +79,7 @@ def smoothe(arreglo,smoonum,keyword=None):
 		
 	if dim == 0:
 		done=-1
-		print "That ain't an array! Its a scalar."
+		print("That ain't an array! Its a scalar.")
 
 	if dim == 1:
 		done=oned()
@@ -89,7 +89,7 @@ def smoothe(arreglo,smoonum,keyword=None):
 		
 	if dim == 3:
 		done=-1
-		print 'Sorry, I am too tired to process such a large array.'
+		print('Sorry, I am so tired to process such a large array.')
 	
 	return done	
 

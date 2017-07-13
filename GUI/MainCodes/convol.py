@@ -19,16 +19,19 @@ def convol1d(array,kernel,scale_factor=None):
 	column = array.shape[1]
 	R = np.zeros([row,column])	
 	m = len(kernel)
+	
+	
 	if scale_factor == None:
 		r=correlate1d(array,kernel)
-		R[:,m/2:column-math.ceil(m/2.)+1]=r[:,m/2:column-math.ceil(m/2.)+1]
+		R[:,int(m/2):column-int(math.ceil(m/2.))+1]=r[:,int(m/2):column-int(math.ceil(m/2.))+1]
 	kernel=kernel/float(scale_factor)
 	r=correlate1d(array,kernel)
-	R[:,m/2:column-math.ceil(m/2.)+1]=r[:,m/2:column-math.ceil(m/2.)+1]
+
+	R[:,int(m/2):column-int(math.ceil(m/2.))+1]=r[:,int(m/2):column-int(math.ceil(m/2.))+1]
 	
 	return R
 
-def sconvol1d(arreglo,kernel=None,scale_factor=None,fwhm=None,std=None):
+def sconvol1d(arreglo,kernel=None,scale_factor=1.,fwhm=None,std=None):
 	"""
 	This program will smooth a 2D array, including the edges,
 	with one-dimensional kernels. Problems of this kind arise when,
@@ -43,8 +46,7 @@ def sconvol1d(arreglo,kernel=None,scale_factor=None,fwhm=None,std=None):
 
 	if dims != 2:
 		raise ValueError('Array must be 2-dimensional')
-	if scale_factor == None:
-		scale_factor = 1.
+		
 	if kernel == None:
 		if (fwhm==None) and (std==None):
 			raise ValueError('Convolve with what?')
@@ -67,17 +69,23 @@ def sconvol1d(arreglo,kernel=None,scale_factor=None,fwhm=None,std=None):
 		
 	big=np.empty([arreglo.shape[0]+width-1,arreglo.shape[1]+width-1])
 	
-	edge=width/2
+	edge=int(width/2)
 	big[edge:big.shape[0]-edge,edge:big.shape[1]-edge]=arreglo
 	for i in range(0,edge):
 		big[edge:big.shape[0]-edge,i]=arreglo[:,edge-1-i]
 		big[edge:big.shape[0]-edge,arreglo.shape[1]+edge+i]=arreglo[:,arreglo.shape[1]-1-i]
-	big=convol1d(big,kernel,scale_factor)
+	
+	#~ big=convol1d(big,kernel,scale_factor)
+	big = correlate1d(big,(kernel/scale_factor),mode="constant",cval=np.nan)
+	big[np.isnan(big)]=0.0
 	big=np.rot90(big,-1)
 	for i in range(0,edge):
 		big[:,i] = big[:,2*edge-1-i]
 		big[:,arreglo.shape[0]+edge+i] = big[:,arreglo.shape[0]+edge-1-i]
-	big=convol1d(big,kernel,scale_factor)
+	
+	#~ big=convol1d(big,kernel,scale_factor)
+	big = correlate1d(big,(kernel/scale_factor),mode="constant",cval=np.nan)
+	big[np.isnan(big)]=0.0
 	big=np.rot90(big,-3)
 	big=big[edge:arreglo.shape[0]+edge,edge:arreglo.shape[1]+edge]
 
